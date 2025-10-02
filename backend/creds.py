@@ -1,0 +1,5 @@
+class Creds:
+    conString = 'cis2368.cjoiyg4yocle.us-east-1.rds.amazonaws.com'
+    userName = 'admin'
+    password = 'adminpassword1234'
+    dbName = 'cis2368db'
