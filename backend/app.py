@@ -22,4 +22,20 @@ def get_all_ingredients():
     ingredients = execute_read_query(conn, query)
     return jsonify(ingredients)
 
+# Obtains ingredient by ID
+@app.route('/api/ingredient', methods=['GET'])
+def get_ingredient_by_id():
+    if 'id' in request.args:
+        id = int(request.args['id'])
+    else:
+        return 'ERROR: No ID provided!'
+
+    myCreds = creds.Creds()
+    conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
+    query = "SELECT * FROM ingredient WHERE id = %s" % id
+    ingredients = execute_read_query(conn, query)
+    return jsonify(ingredients)
+
+
+
 app.run()
