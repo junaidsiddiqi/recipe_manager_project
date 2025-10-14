@@ -63,6 +63,7 @@ def delete_ingredient():
     conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
     execute_query(conn, query)
 
+<<<<<<< HEAD
     return "Ingredient deleted successfully"
 
 # Add recipe
@@ -90,6 +91,9 @@ def get_all_recipes():
     return jsonify(recipes)
 
 
+=======
+    return "🗑️ Ingredient deleted successfully"
+>>>>>>> ecbae13418d2a75b149679d30bfa25cbb0f2d375
 
 
 
