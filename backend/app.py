@@ -128,6 +128,37 @@ def add_recipe_ingredient():
 
     return "Ingredient added to recipe"
 
+# Cook recipe
+@app.route('/api/recipe/cook', methods=['POST'])
+def cook_recipe():
+    data = request.get_json()
+    recipeid = data['recipeid']
+
+    myCreds = creds.Creds()
+    conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
+    cursor = conn.cursor(dictionary=True)
+
+    # Get required ingredients and amounts
+    cursor.execute(f"SELECT ingredientid, amount FROM recipeingredient WHERE recipeid = {recipeid}")
+    ingredients = cursor.fetchall()
+
+    # check the inventory
+    for item in ingredients:
+        cursor.execute(f"SELECT totalamount FROM ingredient WHERE id = {item['ingredientid']}")
+        inventory = cursor.fetchone()
+        if inventory['totalamount'] < item['amount']:
+            return f"Not enough inventory for ingredient ID {item['ingredientid']}"
+
+    # subtract inventory 
+    for item in ingredients:
+        cursor.execute(f"""
+            UPDATE ingredient
+            SET totalamount = totalamount - {item['amount']}
+            WHERE id = {item['ingredientid']}
+        """)
+
+    conn.commit()
+    return "Recipe cooked successfully"
 
 
 app.run()
