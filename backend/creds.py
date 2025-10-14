@@ -1,3 +1,4 @@
+#credientals to log into remote sql db
 class Creds:
     conString = 'cis2368.cjoiyg4yocle.us-east-1.rds.amazonaws.com'
     userName = 'admin'
