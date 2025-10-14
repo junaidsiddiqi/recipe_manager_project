@@ -63,7 +63,7 @@ def delete_ingredient():
     conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
     execute_query(conn, query)
 
-<<<<<<< HEAD
+
     return "Ingredient deleted successfully"
 
 # Add recipe
@@ -88,12 +88,45 @@ def get_all_recipes():
     conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
     query = "SELECT * FROM recipe"
     recipes = execute_read_query(conn, query)
-    return jsonify(recipes)
+    return jsonify(recipes) 
 
+# View recipe with ingredients 
+@app.route('/api/recipe', methods=['GET'])
+def get_recipe_with_ingredients():
+    if 'id' in request.args:
+        recipe_id = int(request.args['id'])
+    else:
+        return "Error: No recipe ID provided"
 
-=======
-    return "🗑️ Ingredient deleted successfully"
->>>>>>> ecbae13418d2a75b149679d30bfa25cbb0f2d375
+    myCreds = creds.Creds()
+    conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
+
+    query = f"""
+        SELECT recipe.name, recipe.instructions, ingredient.ingredientname, recipeingredient.amount
+        FROM recipe
+        JOIN recipeingredient ON recipe.id = recipeingredient.recipeid
+        JOIN ingredient ON recipeingredient.ingredientid = ingredient.id
+        WHERE recipe.id = {recipe_id}
+    """
+
+    result = execute_read_query(conn, query)
+    return jsonify(result)
+
+# add ingredients for a recipe
+@app.route('/api/recipeingredient', methods=['POST'])
+def add_recipe_ingredient():
+    data = request.get_json()
+    recipeid = data['recipeid']
+    ingredientid = data['ingredientid']
+    amount = data['amount']
+
+    query = f"INSERT INTO recipeingredient (recipeid, ingredientid, amount) VALUES ({recipeid}, {ingredientid}, {amount})"
+
+    myCreds = creds.Creds()
+    conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
+    execute_query(conn, query)
+
+    return "Ingredient added to recipe"
 
 
 
