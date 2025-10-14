@@ -127,37 +127,58 @@ def add_recipe_ingredient():
     execute_query(conn, query)
 
     return "Ingredient added to recipe"
-
+                                         
 # Cook recipe
 @app.route('/api/recipe/cook', methods=['POST'])
 def cook_recipe():
     data = request.get_json()
-    recipeid = data['recipeid']
+    recipe_id = data['recipeid']
 
     myCreds = creds.Creds()
-    conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
-    cursor = conn.cursor(dictionary=True)
+    connection = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
+    cursor = connection.cursor(dictionary=True)
 
-    # Get required ingredients and amounts
-    cursor.execute(f"SELECT ingredientid, amount FROM recipeingredient WHERE recipeid = {recipeid}")
+    # Fetch ingredients for the recipe
+    cursor.execute(f"""
+        SELECT ingredientid, amount
+        FROM recipeingredient
+        WHERE recipeid = {recipe_id}
+    """)
     ingredients = cursor.fetchall()
 
-    # check the inventory
-    for item in ingredients:
-        cursor.execute(f"SELECT totalamount FROM ingredient WHERE id = {item['ingredientid']}")
-        inventory = cursor.fetchone()
-        if inventory['totalamount'] < item['amount']:
-            return f"Not enough inventory for ingredient ID {item['ingredientid']}"
-
-    # subtract inventory 
+    # Check inventory for each ingredient
     for item in ingredients:
         cursor.execute(f"""
+            SELECT totalamount
+            FROM ingredient
+            WHERE id = {item['ingredientid']}
+        """)
+        inventory = cursor.fetchone()
+
+        required = item['amount']
+        available = inventory['totalamount']
+
+        if available < required:
+            return f"Not enough inventory for ingredient ID {item['ingredientid']}"
+
+    # Subtract used amount from inventory
+    for item in ingredients:
+        cursor.execute(f"""
+            SELECT totalamount
+            FROM ingredient
+            WHERE id = {item['ingredientid']}
+        """)
+        inventory = cursor.fetchone()
+
+        remaining = inventory['totalamount'] - item['amount']
+
+        cursor.execute(f"""
             UPDATE ingredient
-            SET totalamount = totalamount - {item['amount']}
+            SET totalamount = {remaining}
             WHERE id = {item['ingredientid']}
         """)
 
-    conn.commit()
+    connection.commit()
     return "Recipe cooked successfully"
 
 
