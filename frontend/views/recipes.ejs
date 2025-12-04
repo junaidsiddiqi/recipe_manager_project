@@ -1,0 +1,6 @@
+<h2>Recipes</h2>
+<ul>
+  <% recipes.forEach(function(r){ %>
+    <li><%= r.name %> — <a href="/cook/<%= r.id %>">Cook</a></li>
+  <% }) %>
+</ul>

@@ -1,0 +1,9 @@
+<h2>Cook Recipe</h2>
+<ul>
+  <% recipe.forEach(function(item){ %>
+    <li><%= item.ingredientname %>: <%= item.amount %></li>
+  <% }) %>
+</ul>
+<form method="POST">
+  <button type="submit">Cook</button>
+</form>
