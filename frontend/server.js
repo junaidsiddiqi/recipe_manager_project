@@ -4,7 +4,6 @@ var app = express();
 
 app.set('view engine', 'ejs');
 
-
 // Home page
 app.get('/', function(req, res) {
     res.render('index');
@@ -32,7 +31,7 @@ app.get('/recipes', function(req, res) {
         });
 });
 
-// Cook a recipe
+// Cook a recipe (view)
 app.get('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
     axios.get('http://localhost:5000/api/recipe?id=' + recipeId)
@@ -44,6 +43,7 @@ app.get('/cook/:id', function(req, res) {
         });
 });
 
+// Cook a recipe 
 app.post('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
     axios.post('http://localhost:5000/api/recipe/cook', { recipeid: recipeId })

@@ -1,14 +1,64 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ingredients</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 900px;
+    }
+    .card {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4">Ingredients</h1>
 
+    <!-- Ingredient list -->
+    <div class="row">
+      <% ingredients.forEach(function(ingredient) { %>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body text-center">
+              <h5 class="card-title"><%= ingredient.ingredientname %></h5>
+              <p class="card-text">Total: <%= ingredient.totalamount %></p>
 
-<h1>Ingredients</h1>
-<ul>
-  <% ingredients.forEach(function(ing) { %>
-    <li><%= ing.name %></li>
-  <% }) %>
-</ul>
+              <!-- Action buttons -->
+              <a href="/ingredients/edit/<%= ingredient.id %>" class="btn btn-warning btn-sm">Edit</a>
+              <a href="/ingredients/delete/<%= ingredient.id %>" class="btn btn-danger btn-sm">Delete</a>
+              <a href="/ingredients/use/<%= ingredient.id %>" class="btn btn-success btn-sm">Use</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
 
-<form action="/ingredients/add" method="post">
-  <input type="text" name="name" placeholder="Ingredient name" required>
-  <button type="submit">Add Ingredient</button>
-</form>
+    <!-- Add ingredient form -->
+    <form action="/ingredients/add" method="post" class="mt-4 d-flex">
+      <input type="text" name="name" class="form-control me-2" placeholder="Ingredient name" required>
+      <input type="number" name="totalamount" class="form-control me-2" placeholder="Total amount" required>
+      <button type="submit" class="btn btn-primary">Add Ingredient</button>
+    </form>
+
+    <!-- Navigation -->
+    <div class="mt-4">
+      <a href="/" class="btn btn-secondary">Back to Home</a>
+      <a href="/recipes" class="btn btn-outline-info">View Recipes</a>
+    </div>
+  </div>
+</body>
+</html>
