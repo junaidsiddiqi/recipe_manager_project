@@ -4,6 +4,7 @@ var app = express();
 
 // Setting up ejs as the view engine
 app.set('view engine', 'ejs');
+// used ai to help with handling form submissions and JSON data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
