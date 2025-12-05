@@ -2,18 +2,20 @@ var express = require('express');
 var axios = require('axios');
 var app = express();
 
+// Setting up ejs as the view engine
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// used ai to find a way to have a central reference to the api's to give the code a simpler and clean look.
 const API = "http://localhost:5000/api";
 
-// ---------------- HOME ----------------
+// Homepage
 app.get('/', function(req, res) {
     res.render('index');
 });
 
-// ---------------- INGREDIENTS ----------------
+// Show all ingrdients
 app.get('/ingredients', function(req, res) {
     axios.get(API + '/ingredient/all')
         .then(function(response) {
@@ -51,7 +53,7 @@ app.post('/ingredients/delete', function(req, res) {
         });
 });
 
-// ---------------- RECIPES ----------------
+// Show all recipes
 app.get('/recipes', function(req, res) {
     axios.get(API + '/recipe/all')
         .then(function(response) {
@@ -76,20 +78,8 @@ app.post('/recipes/add', function(req, res) {
         });
 });
 
-// Delete recipe
-app.post('/recipes/delete', function(req, res) {
-    var id = req.body.id;
 
-    axios.delete(API + '/recipe', { data: { id } })
-        .then(function() {
-            res.redirect('/recipes');
-        })
-        .catch(function() {
-            res.send("Error deleting recipe");
-        });
-});
-
-// ---------------- RECIPE-INGREDIENT ASSIGNMENT ----------------
+// Show recipes and ingredients assigned
 app.get('/recipeingredient', function(req, res) {
     axios.all([
         axios.get(API + '/recipe/all'),
@@ -101,12 +91,16 @@ app.get('/recipeingredient', function(req, res) {
             ingredients: ingredientsRes.data,
             message: null
         });
-    }))
+}))
     .catch(function() {
-        res.render('recipeingredient', { recipes: [], ingredients: [], message: "Error loading data" });
-    });
+        res.render('recipeingredient', 
+            { recipes: [], 
+            ingredients: [], 
+            message: "Error loading data" });
+        });
 });
 
+// Assign ingredient to recipe
 app.post('/recipeingredient', function(req, res) {
     var recipeid = req.body.recipeid;
     var ingredientid = req.body.ingredientid;
@@ -121,17 +115,26 @@ app.post('/recipeingredient', function(req, res) {
         });
 });
 
-// ---------------- COOK RECIPE ----------------
+// Show recipe selection 
 app.get('/cook', function(req, res) {
     axios.get(API + '/recipe/all')
         .then(function(response) {
-            res.render('cook_select', { recipes: response.data, recipe: [], recipeId: null, message: null });
+            res.render('cook_select', 
+                { recipes: response.data, 
+                recipe: [], 
+                recipeId: null, 
+                message: null });
         })
         .catch(function() {
-            res.render('cook_select', { recipes: [], recipe: [], recipeId: null, message: "Error loading recipes" });
+            res.render('cook_select', 
+                { recipes: [], 
+                recipe: [], 
+                recipeId: null, 
+                message: "Error loading recipes" });
         });
 });
 
+// Select the recipe to cook
 app.post('/cook/select', function(req, res) {
     var recipeId = req.body.recipeid;
 
@@ -148,10 +151,15 @@ app.post('/cook/select', function(req, res) {
                 });
         })
         .catch(function() {
-            res.render('cook_select', { recipes: [], recipe: [], recipeId: recipeId, message: "Error loading recipe" });
+            res.render('cook_select', 
+                { recipes: [], 
+                recipe: [], 
+                recipeId: recipeId, 
+                message: "Error loading recipe" });
         });
 });
 
+// Cook the recipe
 app.post('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
 
@@ -177,7 +185,6 @@ app.post('/cook/:id', function(req, res) {
         });
 });
 
-// ---------------- SERVER ----------------
 app.listen(8080, function() {
-    console.log('Frontend running on http://localhost:8080');
+    console.log('8080 is the magic port');
 });

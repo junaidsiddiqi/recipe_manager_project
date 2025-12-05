@@ -130,7 +130,6 @@ def add_recipe_ingredient():
     return "Ingredient added to recipe"
                                          
 # Cook recipe
-# Cook recipe
 @app.route('/api/recipe/cook', methods=['POST'])
 def cook_recipe():
     data = request.get_json()
@@ -168,7 +167,6 @@ def cook_recipe():
         remaining = int(inventory['totalamount']) - int(item['amount'])
 
         if remaining <= 0:
-            # Instead of deleting, set amount to 0
             cursor.execute("UPDATE ingredient SET totalamount = 0 WHERE id = %s", (item['ingredientid'],))
         else:
             cursor.execute("UPDATE ingredient SET totalamount = %s WHERE id = %s", (remaining, item['ingredientid']))
