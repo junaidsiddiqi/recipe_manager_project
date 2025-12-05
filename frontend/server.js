@@ -3,58 +3,181 @@ var axios = require('axios');
 var app = express();
 
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Home page
+const API = "http://localhost:5000/api";
+
+// ---------------- HOME ----------------
 app.get('/', function(req, res) {
     res.render('index');
 });
 
-// Show ingredients
+// ---------------- INGREDIENTS ----------------
 app.get('/ingredients', function(req, res) {
-    axios.get('http://localhost:5000/api/ingredient/all')
+    axios.get(API + '/ingredient/all')
         .then(function(response) {
-            res.render('ingredients', { ingredients: response.data });
+            res.render('ingredients', { ingredients: response.data, message: null });
         })
         .catch(function() {
-            res.render('ingredients', { ingredients: [] });
+            res.render('ingredients', { ingredients: [], message: "Error fetching ingredients" });
         });
 });
 
-// Show recipes
+// Add ingredient
+app.post('/ingredients/add', function(req, res) {
+    var name = req.body.name;
+    var amount = parseInt(req.body.amount, 10);
+
+    axios.post(API + '/ingredient', { ingredientname: name, totalamount: amount })
+        .then(function() {
+            res.redirect('/ingredients');
+        })
+        .catch(function() {
+            res.send("Error adding ingredient");
+        });
+});
+
+// Delete ingredient
+app.post('/ingredients/delete', function(req, res) {
+    var id = req.body.id;
+
+    axios.delete(API + '/ingredient', { data: { id } })
+        .then(function() {
+            res.redirect('/ingredients');
+        })
+        .catch(function() {
+            res.send("Error deleting ingredient");
+        });
+});
+
+// ---------------- RECIPES ----------------
 app.get('/recipes', function(req, res) {
-    axios.get('http://localhost:5000/api/recipe/all')
+    axios.get(API + '/recipe/all')
         .then(function(response) {
-            res.render('recipes', { recipes: response.data });
+            res.render('recipes', { recipes: response.data, message: null });
         })
         .catch(function() {
-            res.render('recipes', { recipes: [] });
+            res.render('recipes', { recipes: [], message: "Error fetching recipes" });
         });
 });
 
-// Cook a recipe (view)
-app.get('/cook/:id', function(req, res) {
-    var recipeId = req.params.id;
-    axios.get('http://localhost:5000/api/recipe?id=' + recipeId)
-        .then(function(response) {
-            res.render('cook', { recipe: response.data, recipeId: recipeId });
+// Add recipe
+app.post('/recipes/add', function(req, res) {
+    var name = req.body.name;
+    var instructions = req.body.instructions;
+
+    axios.post(API + '/recipe', { name, instructions })
+        .then(function() {
+            res.redirect('/recipes');
         })
         .catch(function() {
-            res.render('cook', { recipe: [], recipeId: recipeId });
+            res.send("Error adding recipe");
         });
 });
 
-// Cook a recipe 
+// Delete recipe
+app.post('/recipes/delete', function(req, res) {
+    var id = req.body.id;
+
+    axios.delete(API + '/recipe', { data: { id } })
+        .then(function() {
+            res.redirect('/recipes');
+        })
+        .catch(function() {
+            res.send("Error deleting recipe");
+        });
+});
+
+// ---------------- RECIPE-INGREDIENT ASSIGNMENT ----------------
+app.get('/recipeingredient', function(req, res) {
+    axios.all([
+        axios.get(API + '/recipe/all'),
+        axios.get(API + '/ingredient/all')
+    ])
+    .then(axios.spread(function(recipesRes, ingredientsRes) {
+        res.render('recipeingredient', { 
+            recipes: recipesRes.data, 
+            ingredients: ingredientsRes.data,
+            message: null
+        });
+    }))
+    .catch(function() {
+        res.render('recipeingredient', { recipes: [], ingredients: [], message: "Error loading data" });
+    });
+});
+
+app.post('/recipeingredient', function(req, res) {
+    var recipeid = req.body.recipeid;
+    var ingredientid = req.body.ingredientid;
+    var amount = req.body.amount;
+
+    axios.post(API + '/recipeingredient', { recipeid, ingredientid, amount })
+        .then(function() {
+            res.redirect('/recipeingredient');
+        })
+        .catch(function() {
+            res.send("Error assigning ingredient to recipe");
+        });
+});
+
+// ---------------- COOK RECIPE ----------------
+app.get('/cook', function(req, res) {
+    axios.get(API + '/recipe/all')
+        .then(function(response) {
+            res.render('cook_select', { recipes: response.data, recipe: [], recipeId: null, message: null });
+        })
+        .catch(function() {
+            res.render('cook_select', { recipes: [], recipe: [], recipeId: null, message: "Error loading recipes" });
+        });
+});
+
+app.post('/cook/select', function(req, res) {
+    var recipeId = req.body.recipeid;
+
+    axios.get(API + '/recipe?id=' + recipeId)
+        .then(function(response) {
+            axios.get(API + '/recipe/all')
+                .then(function(allRecipes) {
+                    res.render('cook_select', { 
+                        recipes: allRecipes.data, 
+                        recipe: response.data, 
+                        recipeId: recipeId, 
+                        message: null 
+                    });
+                });
+        })
+        .catch(function() {
+            res.render('cook_select', { recipes: [], recipe: [], recipeId: recipeId, message: "Error loading recipe" });
+        });
+});
+
 app.post('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
-    axios.post('http://localhost:5000/api/recipe/cook', { recipeid: recipeId })
+
+    axios.post(API + '/recipe/cook', { recipeid: recipeId })
         .then(function(response) {
-            res.send(response.data);
+            axios.get(API + '/recipe?id=' + recipeId)
+                .then(function(recipeRes) {
+                    res.render('cook_select', {
+                        recipes: recipeRes.data,
+                        recipe: recipeRes.data,
+                        recipeId: recipeId,
+                        message: response.data
+                    });
+                });
         })
         .catch(function() {
-            res.send("Error cooking recipe");
+            res.render('cook_select', {
+                recipes: [],
+                recipe: [],
+                recipeId: recipeId,
+                message: "Error cooking recipe"
+            });
         });
 });
 
+// ---------------- SERVER ----------------
 app.listen(8080, function() {
-    console.log('8080 is the magic port');
+    console.log('Frontend running on http://localhost:8080');
 });

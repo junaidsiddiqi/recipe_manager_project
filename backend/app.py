@@ -57,14 +57,15 @@ def delete_ingredient():
     request_data = request.get_json()
     idToDelete = request_data['id']
 
-    query = "DELETE FROM ingredient WHERE id = %s" % idToDelete
-
     myCreds = creds.Creds()
     conn = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
-    execute_query(conn, query)
 
+    execute_query(conn, f"DELETE FROM recipeingredient WHERE ingredientid = {idToDelete}")
 
-    return "Ingredient deleted successfully"
+    execute_query(conn, f"DELETE FROM ingredient WHERE id = {idToDelete}")
+
+    return jsonify({"message": "Ingredient deleted successfully"})
+
 
 # Add recipe
 @app.route('/api/recipe', methods=['POST'])
@@ -129,57 +130,52 @@ def add_recipe_ingredient():
     return "Ingredient added to recipe"
                                          
 # Cook recipe
+# Cook recipe
 @app.route('/api/recipe/cook', methods=['POST'])
 def cook_recipe():
     data = request.get_json()
-    recipe_id = data['recipeid']
+    recipe_id = data.get('recipeid')
 
     myCreds = creds.Creds()
     connection = create_connection(myCreds.conString, myCreds.userName, myCreds.password, myCreds.dbName)
     cursor = connection.cursor(dictionary=True)
 
     # Fetch ingredients for the recipe
-    cursor.execute(f"""
-        SELECT ingredientid, amount
-        FROM recipeingredient
-        WHERE recipeid = {recipe_id}
-    """)
+    cursor.execute("SELECT ingredientid, amount FROM recipeingredient WHERE recipeid = %s", (recipe_id,))
     ingredients = cursor.fetchall()
 
     # Check inventory for each ingredient
     for item in ingredients:
-        cursor.execute(f"""
-            SELECT totalamount
-            FROM ingredient
-            WHERE id = {item['ingredientid']}
-        """)
+        cursor.execute("SELECT totalamount FROM ingredient WHERE id = %s", (item['ingredientid'],))
         inventory = cursor.fetchone()
 
-        required = item['amount']
-        available = inventory['totalamount']
+        if inventory is None:
+            return jsonify({"error": f"Ingredient ID {item['ingredientid']} not found"}), 404
+
+        required = int(item['amount'])
+        available = int(inventory['totalamount'])
 
         if available < required:
-            return f"Not enough inventory for ingredient ID {item['ingredientid']}"
+            return jsonify({"error": f"Not enough inventory for ingredient ID {item['ingredientid']}"}), 400
 
-    # Subtract used amount from inventory
+    # Subtract used amount from inventory or set to 0 if depleted
     for item in ingredients:
-        cursor.execute(f"""
-            SELECT totalamount
-            FROM ingredient
-            WHERE id = {item['ingredientid']}
-        """)
+        cursor.execute("SELECT totalamount FROM ingredient WHERE id = %s", (item['ingredientid'],))
         inventory = cursor.fetchone()
+        if inventory is None:
+            continue
 
-        remaining = inventory['totalamount'] - item['amount']
+        remaining = int(inventory['totalamount']) - int(item['amount'])
 
-        cursor.execute(f"""
-            UPDATE ingredient
-            SET totalamount = {remaining}
-            WHERE id = {item['ingredientid']}
-        """)
+        if remaining <= 0:
+            # Instead of deleting, set amount to 0
+            cursor.execute("UPDATE ingredient SET totalamount = 0 WHERE id = %s", (item['ingredientid'],))
+        else:
+            cursor.execute("UPDATE ingredient SET totalamount = %s WHERE id = %s", (remaining, item['ingredientid']))
 
     connection.commit()
-    return "Recipe cooked successfully"
+    return jsonify({"message": "Recipe cooked successfully"}), 200
+
 
 
 app.run()
