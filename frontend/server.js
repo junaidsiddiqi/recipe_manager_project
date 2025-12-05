@@ -161,6 +161,7 @@ app.post('/cook/select', function(req, res) {
 });
 
 // Cook the recipe
+// used ai to help me utilize two api calls and retrieving its data
 app.post('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
 
