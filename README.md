@@ -1,1 +1,1 @@
-
+A full‑stack web application built with a three‑tier architecture (UI, REST API, Database) that allows users to manage ingredients, create and edit recipes, assign ingredients to recipes, and simulate cooking meals.
