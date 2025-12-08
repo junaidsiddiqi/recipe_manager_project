@@ -35,37 +35,37 @@ Open the project in VSCode for optimal development experience.
 
 **Launch the mySQL database**
 
-Run the mySQL files in the backend folder to establish a connection
+-Run the mySQL files in the backend folder to establish a connection
 
 *Navigate to the backend directory in VSCode using the command:*
 
-cd backend
+> cd backend
 
 
 *Install required dependencies for Flask backend:* 
 
-pip install flask mysql-connector-python
+> pip install flask mysql-connector-python
 
 *Start the backend server:*
 
-python app.py
+> python app.py
 
 **Backend runs at: http://localhost:5000**
 
 *Navigate to the frontend directory:*
 
-cd frontend
+> cd frontend
 
 *Install required dependencies for Node.js frontend:*
-npm install
+> npm install
 
 *Or install individually:*
-npm install express
-npm install axios
-npm install ejs
+> npm install express
+> npm install axios
+> npm install ejs
 
 *Start the frontend server:*
-node server.js
+> node server.js
 **Frontend runs at: http://localhost:8080**
 
 ---
