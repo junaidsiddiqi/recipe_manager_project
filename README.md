@@ -50,7 +50,6 @@ Open the project in VSCode for optimal development experience.
 
 > python app.py
 
-**Backend runs at: http://localhost:5000**
 
 *Navigate to the frontend directory:*
 
