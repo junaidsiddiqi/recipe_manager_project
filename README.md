@@ -66,6 +66,7 @@ Open the project in VSCode for optimal development experience.
 
 *Start the frontend server:*
 > node server.js
+
 **Frontend runs at: http://localhost:8080**
 
 ---
