@@ -21,6 +21,9 @@ Error Handling: Prevents cooking if insufficient inventory exists, with clear er
 
 Open the project in VSCode for optimal development experience.
 
+*Launch the mySQL database*
+*Run the mySQL files in the backend folder to establish a connection*
+
 *Navigate to the backend directory in VSCode using the command:*
 cd backend
 
