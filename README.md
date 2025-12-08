@@ -2,7 +2,7 @@
 
 ## Project Description
 
-A full‑stack Recipe Manager application. The project uses HTML, CSS, JavaScript for the frontend, with Node.js + Express managing the frontend server and Flask + MySQL powering the backend API.
+A full‑stack web application built with a three‑tier architecture (UI, REST API, Database) that allows users to manage ingredients, create and edit recipes, assign ingredients to recipes, and simulate cooking meals.
 
 ---
 
