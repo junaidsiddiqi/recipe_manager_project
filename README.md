@@ -1,4 +1,4 @@
-# Recipe Manager and Cooking Helper
+# Recipe Manager App
 
 ## Project Description
 
