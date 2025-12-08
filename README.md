@@ -32,6 +32,7 @@ Create your schema files (ingredient.sql, recipe.sql, recipeingredient.sql).
 Update creds.py with the RDS endpoint, username, password, and database name.
 
 **Launch the mySQL database**
+
 Run the mySQL files in the backend folder to establish a connection
 
 *Navigate to the backend directory in VSCode using the command:*
