@@ -30,7 +30,7 @@ pip install flask mysql-connector-python
 
 *Start the backend server:*
 python app.py
-**Backend runs at: http://localhost:5000/api**
+**Backend runs at: http://localhost:5000**
 
 *Navigate to the frontend directory:*
 cd frontend
