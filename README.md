@@ -61,7 +61,9 @@ Open the project in VSCode for optimal development experience.
 
 *Or install individually:*
 > npm install express
+> 
 > npm install axios
+> 
 > npm install ejs
 
 *Start the frontend server:*
