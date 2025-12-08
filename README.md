@@ -1,4 +1,4 @@
-# Recipe Manager App
+# Recipe Manager 
 
 ## Project Description
 
