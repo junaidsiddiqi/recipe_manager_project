@@ -2,7 +2,7 @@
 
 ## Project Description
 
-A full‑stack Recipe Manager application for the University of Houston coursework. The project uses HTML, CSS, JavaScript for the frontend, with Node.js + Express managing the frontend server and Flask + MySQL powering the backend API.
+A full‑stack Recipe Manager application. The project uses HTML, CSS, JavaScript for the frontend, with Node.js + Express managing the frontend server and Flask + MySQL powering the backend API.
 
 ---
 
