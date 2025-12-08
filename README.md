@@ -26,10 +26,9 @@ Open the project in VSCode for optimal development experience.
 
 **Database:**
 
-Provision an Amazon RDS MySQL instance.
-Create your schema files (ingredient.sql, recipe.sql, recipeingredient.sql).
-
-Update creds.py with the RDS endpoint, username, password, and database name.
+-Provision an Amazon RDS MySQL instance.
+-Create your schema files (ingredient.sql, recipe.sql, recipeingredient.sql).
+-Update creds.py with the RDS endpoint, username, password, and database name.
 
 **Launch the mySQL database**
 
