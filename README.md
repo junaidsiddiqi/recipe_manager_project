@@ -27,25 +27,33 @@ Open the project in VSCode for optimal development experience.
 **Database:**
 
 -Provision an Amazon RDS MySQL instance.
+
 -Create your schema files (ingredient.sql, recipe.sql, recipeingredient.sql).
+
 -Update creds.py with the RDS endpoint, username, password, and database name.
+
 
 **Launch the mySQL database**
 
 Run the mySQL files in the backend folder to establish a connection
 
 *Navigate to the backend directory in VSCode using the command:*
+
 cd backend
 
 
 *Install required dependencies for Flask backend:* 
+
 pip install flask mysql-connector-python
 
 *Start the backend server:*
+
 python app.py
+
 **Backend runs at: http://localhost:5000**
 
 *Navigate to the frontend directory:*
+
 cd frontend
 
 *Install required dependencies for Node.js frontend:*
