@@ -59,7 +59,10 @@ npm install ejs
 node server.js
 **Frontend runs at: http://localhost:8080**
 
-*Website Screenshots*
+---
+
+## Website Screenshots
+
 <img width="1500" height="678" alt="523810816-0ea06b6c-ceb5-4f7f-8580-2f3ffd1594be" src="https://github.com/user-attachments/assets/ef0dfd0b-4774-4b6d-b77e-fd6d66129953" />
 <img width="1500" height="696" alt="image" src="https://github.com/user-attachments/assets/6e333c57-796f-43c9-bd55-03a95e91edc6" />
 <img width="1500" height="686" alt="image" src="https://github.com/user-attachments/assets/2535a644-0f70-4461-86ce-dcce2a230c4d" />
