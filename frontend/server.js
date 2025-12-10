@@ -4,11 +4,9 @@ var app = express();
 
 // Setting up ejs as the view engine
 app.set('view engine', 'ejs');
-// used ai to help with handling form submissions and JSON data
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// used ai to find a way to have a central reference to the api's to give the code a simpler and clean look.
 const API = "http://localhost:5000/api";
 
 // Homepage
@@ -161,7 +159,6 @@ app.post('/cook/select', function(req, res) {
 });
 
 // Cook the recipe
-// used ai to help me utilize two api calls and retrieving its data
 app.post('/cook/:id', function(req, res) {
     var recipeId = req.params.id;
 
